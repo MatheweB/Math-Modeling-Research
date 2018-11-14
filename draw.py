@@ -151,6 +151,7 @@ class Drawer:
         noDots = False
         whiteOnBlack = False
         
+        
         if noLines != True:
             #Draws a line to the darkest boi
             if setShapes == True or setLines == True:

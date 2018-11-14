@@ -1,13 +1,28 @@
 import square
 
 tileSize = None
+thresholding = None
+threshNum = None
+
 class Process:
 
-    def __init__(self, tSize):
+    def __init__(self, tiSize, tHold, tNum):
         global tileSize
-        tileSize = tSize
+        global thresholding
+        global threshNum
+        tileSize = tiSize
+        thresholding = tHold
+        threshNum = tNum
         
     def makeSquares(self, grid):
+
+        threshListy = []
+        if thresholding == True:
+            count = 0
+            for x in range(0,threshNum+1):
+                threshListy.append(count)
+                count += 255/threshNum
+                
         squareNum = 0
         totalSquares = 0
         addNum = 0
@@ -22,7 +37,7 @@ class Process:
                         squareNum += grid.photo[y*tileSize + a][x*tileSize + b]
 
                 totalSquares += 1
-                newSquare = square.Square((totalSquares%2)+addNum, int(squareNum//(tileSize*tileSize)), x*tileSize, y*tileSize, x, y, tileSize)
+                newSquare = square.Square((totalSquares%2)+addNum, int(squareNum//(tileSize*tileSize)), x*tileSize, y*tileSize, x, y, tileSize, threshListy)
                 grid.squares[y].append(newSquare)
                 grid.pixelPhoto[y].append(int(squareNum//(tileSize*tileSize)))
                 squareNum = 0
@@ -47,5 +62,6 @@ class Process:
                 grid.squares[y][x].setColors()
                 grid.squares[y][x].setDirection()
                 grid.squares[y][x].setNewVertexPos()
+                
                 
                 

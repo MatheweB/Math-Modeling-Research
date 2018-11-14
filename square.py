@@ -1,11 +1,8 @@
-geometricThresholds = False
-geoThreshNum = 20
-darkThreshold = (255/2)
 tileSize = None #defines the square size of a given tile
 import math
 
 class Square:
-    def __init__(self, c, avgColor, x, y, gridx, gridy, tSize):
+    def __init__(self, c, avgColor, x, y, gridx, gridy, tSize, threshListy):
 
         global tileSize
         tileSize = tSize
@@ -57,6 +54,22 @@ class Square:
 
         self.squareColors = None
 
+        self.threshList = threshListy
+
+    def setThreshList(self, listy):
+        self.threshList = listy
+        
+
+    def getBestThresh(self, colorNum):
+
+        start = 0
+        end = 0
+        for x in range(0,len(self.threshList)-1):
+            start = self.threshList[x]
+            end = self.threshList[x+1]
+            if colorNum >= start and colorNum <= end:
+                return end
+
     def getColorString(self, color):
         if color == 1:
             return "b1"
@@ -98,15 +111,15 @@ class Square:
         scaledHypLenX = self.moveDirection[2]
         scaledHypLenY = self.moveDirection[3]
 
-        if scaledHypLenX < 15:
-            scaledHypLenX = 15
-        if scaledHypLenY < 15:
-            scaledHypLenY  = 15
+        if scaledHypLenX < 30:
+            scaledHypLenX = 30
+        if scaledHypLenY < 30:
+            scaledHypLenY  = 30
 
-        if scaledHypLenX > 240:
-            scaledHypLenX = 240
-        if scaledHypLenY > 240:
-            scaledHypLenY  = 240
+        if scaledHypLenX > 190:
+            scaledHypLenX = 190
+        if scaledHypLenY > 190:
+            scaledHypLenY  = 190
             
         xAdd = scaledHypLenX*((tileSize/2)/255)
         yAdd = scaledHypLenY*((tileSize/2)/255)
@@ -226,8 +239,8 @@ class Square:
                 yMove = self.getAvgColor(self.avgColor, self.S)
                 
             elif self.squareColors[0] == "b2":
-                xMove = self.getAvgColor(self.avgColor, self.W)
-                yMove = self.getAvgColor(self.avgColor, self.N)
+                xMove = self.getAvgColor(self.avgColor, self.E)
+                yMove = self.getAvgColor(self.avgColor, self.S)
                 
             elif self.squareColors[1] == "w1":
                 xMove = self.getAvgColor(self.avgColor, self.W)
@@ -242,9 +255,12 @@ class Square:
                 yMove = self.getAvgColor(self.avgColor, self.S)
                 
             elif self.squareColors[1] == "b2":
-                xMove = self.getAvgColor(self.avgColor, self.E)
-                yMove = self.getAvgColor(self.avgColor, self.N)
+                xMove = self.getAvgColor(self.avgColor, self.W)
+                yMove = self.getAvgColor(self.avgColor, self.S)
 
+        if len(self.threshList) != 0:
+            xMove = self.getBestThresh(xMove)
+            yMove = self.getBestThresh(yMove)
                    
         if avgColor >= 255/2:
             if self.squareColors[0] == "w1":
@@ -283,7 +299,7 @@ class Square:
                 self.moveDirection = ["SW", avgColor, xMove, yMove]
                 
             elif self.squareColors[0] == "b2":
-                self.moveDirection = ["NW", avgColor, xMove, yMove]
+                self.moveDirection = ["SE", avgColor, xMove, yMove]
                 
             elif self.squareColors[1] == "w1":
                 self.moveDirection = ["NW", avgColor, xMove, yMove]
@@ -295,7 +311,7 @@ class Square:
                 self.moveDirection = ["SE", avgColor, xMove, yMove]
                 
             elif self.squareColors[1] == "b2":
-                self.moveDirection = ["NE", avgColor, xMove, yMove]                
+                self.moveDirection = ["SW", avgColor, xMove, yMove]                
             
                  
 
@@ -324,23 +340,23 @@ class Square:
 
     def setAvgDarkestC(self):
 
-        if geometricThresholds == True:
+##        if geometricThresholds == True:
+##
+##            tempthresh = geoThreshNum
+##
+##            for x in range(0,tempthresh):
+##                if self.avgColor >= (x)*(255/tempthresh) and self.avgColor <= (x+1)*(255/tempthresh):
+##                    if whiteOnBlack == True:
+##                        self.avgDarkestC = (x)*(255/tempthresh)
+##                    else:
+##                        self.avgDarkestC = 255 - (x)*(255/tempthresh)
 
-            tempthresh = geoThreshNum
+        #else:
+        totalC = 0
+        for neighbor in self.neighbors:
+            totalC += neighbor.avgColor
 
-            for x in range(0,tempthresh):
-                if self.avgColor >= (x)*(255/tempthresh) and self.avgColor <= (x+1)*(255/tempthresh):
-                    if whiteOnBlack == True:
-                        self.avgDarkestC = (x)*(255/tempthresh)
-                    else:
-                        self.avgDarkestC = 255 - (x)*(255/tempthresh)
-
-        else:
-            totalC = 0
-            for neighbor in self.neighbors:
-                totalC += neighbor.avgColor
-
-            self.avgDarkestC = totalC/len(self.neighbors)
+        self.avgDarkestC = totalC/len(self.neighbors)
 
 
 
