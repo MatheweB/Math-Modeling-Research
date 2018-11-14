@@ -3,17 +3,17 @@ import draw
 import processBoard as boardProcessor
 import processImg as imgProcessor
 
-photoName = ("b")
-tileSize =  10
+photoName = ("aperture")
+tileSize =  6
 setShapes = True
-setShapeColors = True
+setShapeColors = False
 setLines = False #Color
 setLineColors = False
 setDots = False
 setDotColors = False
 
-fancyColor = True
-greyShades = 1
+fancyColor = False
+greyShades = 14
 diagRestrict = False
 
 

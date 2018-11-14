@@ -216,17 +216,17 @@ class Drawer:
             for x in range(0,len(allItems[0])-1):
                 if y % 2 == 0:
                     if x % 2 == 0:
-                        color = "white"
+                        color = "black"
 
                     elif x % 2 != 0:
-                        color = "black"
+                        color = "white"
                         
                 else:
                     if x % 2 == 0:
-                        color = "black"
+                        color = "white"
 
                     elif x % 2 != 0:
-                        color = "white"
+                        color = "black"
                     
                 one = grid.squares[y][x]
                 two = grid.squares[y][x+1]

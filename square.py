@@ -58,10 +58,14 @@ class Square:
         self.squareColors = None
 
     def getColorString(self, color):
-        if color == 1 or color == 3:
-            return "black"
+        if color == 1:
+            return "b1"
+        if color == 3:
+            return "b2"
+        if color == 0:
+            return "w1"
         else:
-            return "white"
+            return "w2"
         
         
     def setColors(self):
@@ -76,7 +80,6 @@ class Square:
         else:
             self.squareColors = [self.getColorString(self.c), self.getColorString(self.E.c)]
 
-        print(self.squareColors)
 
         
 
@@ -92,8 +95,8 @@ class Square:
         #scaledHypLenX = self.moveDirection[1][0] * scaleSize
         #scaledHypLenY = self.moveDirection[1][1] * scaleSize
 
-        scaledHypLenX = self.moveDirection[1][0]
-        scaledHypLenY = self.moveDirection[1][1]
+        scaledHypLenX = self.moveDirection[2]
+        scaledHypLenY = self.moveDirection[3]
 
         if scaledHypLenX < 15:
             scaledHypLenX = 15
@@ -147,78 +150,153 @@ class Square:
         if self.NW != None:
             self.diagColors[3] = self.NW
 
+    def getAvgColor(self, col1, neighbor):
+
+        count = 1
+        summ = col1
+        if neighbor != None:
+            count += 1
+            summ += neighbor.avgColor
+
+        return summ/count
+    
+
     def setDirection(self):
 
-        dirNames = ["NE", "SE", "SW", "NW"]
-        
-        diagQuadrants = [None for x in range (0,4)]
-        
+        neighborList = [self.N, self.E, self.S, self.W]
         mySum = self.avgColor
+        count = 1
 
-        if self.N != None and self.NE != None and self.E != None:
-            mySum = self.N.avgColor + self.NE.avgColor + self.E.avgColor + self.avgColor
+        for neighbor in neighborList:
+            try:
+                mySum += neighbor.avgColor
+                count += 1
+            except:
+                continue
 
-            xSum = self.NE.avgColor + self.E.avgColor
-            ySum = self.N.avgColor + self.NE.avgColor
+        avgColor = mySum/count
 
-            diagQuadrants[0] = [xSum/2, ySum/2, mySum/4]
-            
-            #diagQuadrants[0] = mySum/4
-            
-        if self.E != None and self.SE != None and self.S != None:
-            xSum = self.E.avgColor + self.SE.avgColor
-            ySum = self.SE.avgColor + self.S.avgColor
-            mySum = self.E.avgColor + self.SE.avgColor + self.S.avgColor + self.avgColor
-            diagQuadrants[1] = [xSum/2, ySum/2, mySum/4]
-            #diagQuadrants[1] = mySum/4
-
-        if self.S != None and self.SW != None and self.W != None:
-            mySum = self.S.avgColor + self.SW.avgColor + self.W.avgColor + self.avgColor
-            xSum = self.SW.avgColor + self.W.avgColor
-            ySum = self.S.avgColor + self.SW.avgColor
-
-            diagQuadrants[2] = [xSum/2, ySum/2, mySum/4]
-            
-            
-            #diagQuadrants[2] = mySum/4
-
-        if self.W != None and self.NW != None and self.N != None:
-            mySum = self.W.avgColor + self.NW.avgColor + self.N.avgColor + self.avgColor
-            xSum = self.W.avgColor + self.NW.avgColor
-            ySum = self.NW.avgColor + self.N.avgColor
-
-            diagQuadrants[3] = [xSum/2, ySum/2, mySum/4]
-            
-            #diagQuadrants[3] = mySum/4
-
-        maxQuad = 0
-        darkestNum = 0
         
-        for x in range(0,4):
-            if diagQuadrants[x] != None:
-                if diagQuadrants[x][2]  > darkestNum:
-                    maxQuad = x
-                    #darkestNum = diagQuadrants[x]
-                    darkestNum = diagQuadrants[x][2]
+        if avgColor >= 255/2:
+            if self.squareColors[0] == "w1":
+                
+                xMove = self.getAvgColor(self.avgColor, self.W)
+                yMove = self.getAvgColor(self.avgColor, self.N)
+
+            elif self.squareColors[0] == "b1":
+                xMove = self.getAvgColor(self.avgColor, self.E)
+                yMove = self.getAvgColor(self.avgColor, self.N)
+
+            elif self.squareColors[0] == "w2":
+                xMove = self.getAvgColor(self.avgColor, self.E)
+                yMove = self.getAvgColor(self.avgColor, self.S)
+                
+            elif self.squareColors[0] == "b2":
+                xMove = self.getAvgColor(self.avgColor, self.W)
+                yMove = self.getAvgColor(self.avgColor, self.S)
+                
+            elif self.squareColors[1] == "w1":
+                xMove = self.getAvgColor(self.avgColor, self.E)
+                yMove = self.getAvgColor(self.avgColor, self.N)
+                
+            elif self.squareColors[1] == "b1":
+                xMove = self.getAvgColor(self.avgColor, self.W)
+                yMove = self.getAvgColor(self.avgColor, self.N)
+
+            elif self.squareColors[1] == "w2":
+                xMove = self.getAvgColor(self.avgColor, self.W)
+                yMove = self.getAvgColor(self.avgColor, self.S)
+                
+            elif self.squareColors[1] == "b2":
+                xMove = self.getAvgColor(self.avgColor, self.E)
+                yMove = self.getAvgColor(self.avgColor, self.S)
+                 
+
+        elif avgColor < 255/2:
+            if self.squareColors[0] == "w1":
+                xMove = self.getAvgColor(self.avgColor, self.E)
+                yMove = self.getAvgColor(self.avgColor, self.N)
+
+            elif self.squareColors[0] == "b1":
+                xMove = self.getAvgColor(self.avgColor, self.W)
+                yMove = self.getAvgColor(self.avgColor, self.N)
+
+            elif self.squareColors[0] == "w2":
+                xMove = self.getAvgColor(self.avgColor, self.W)
+                yMove = self.getAvgColor(self.avgColor, self.S)
+                
+            elif self.squareColors[0] == "b2":
+                xMove = self.getAvgColor(self.avgColor, self.W)
+                yMove = self.getAvgColor(self.avgColor, self.N)
+                
+            elif self.squareColors[1] == "w1":
+                xMove = self.getAvgColor(self.avgColor, self.W)
+                yMove = self.getAvgColor(self.avgColor, self.N)
+                
+            elif self.squareColors[1] == "b1":
+                xMove = self.getAvgColor(self.avgColor, self.E)
+                yMove = self.getAvgColor(self.avgColor, self.N)
+
+            elif self.squareColors[1] == "w2":
+                xMove = self.getAvgColor(self.avgColor, self.E)
+                yMove = self.getAvgColor(self.avgColor, self.S)
+                
+            elif self.squareColors[1] == "b2":
+                xMove = self.getAvgColor(self.avgColor, self.E)
+                yMove = self.getAvgColor(self.avgColor, self.N)
 
                    
-        if darkestNum >= 255/2:
-            if self.diagColors[maxQuad].c == 1 or self.diagColors[maxQuad].c == 3: #Black
-                self.moveDirection = [dirNames[maxQuad], diagQuadrants[maxQuad]] #Same direction to make smaller
+        if avgColor >= 255/2:
+            if self.squareColors[0] == "w1":
+                self.moveDirection = ["NW", avgColor, xMove, yMove]
+
+            elif self.squareColors[0] == "b1":
+                self.moveDirection = ["NE", avgColor, xMove, yMove]
+
+            elif self.squareColors[0] == "w2":
+                self.moveDirection = ["SE", avgColor, xMove, yMove]
                 
+            elif self.squareColors[0] == "b2":
+                self.moveDirection = ["SW", avgColor, xMove, yMove]
+                
+            elif self.squareColors[1] == "w1":
+                self.moveDirection = ["NE", avgColor, xMove, yMove]
+                
+            elif self.squareColors[1] == "b1":
+                self.moveDirection = ["NW", avgColor, xMove, yMove]
+
+            elif self.squareColors[1] == "w2":
+                self.moveDirection = ["SW", avgColor, xMove, yMove]
+                
+            elif self.squareColors[1] == "b2":
+                self.moveDirection = ["SE", avgColor, xMove, yMove]
                  
 
-            elif self.diagColors[maxQuad].c == 0 or self.diagColors[maxQuad].c == 2: #White
-                self.moveDirection = [dirNames[(maxQuad+2)%4], diagQuadrants[maxQuad]] #Opposite direction to make bigger
-                 
+        elif avgColor < 255/2:
+            if self.squareColors[0] == "w1":
+                self.moveDirection = ["NE", avgColor, xMove, yMove]
 
-        elif darkestNum < 255/2:
-            if self.diagColors[maxQuad].c == 1 or self.diagColors[maxQuad].c == 3: #Black
-                self.moveDirection = [dirNames[(maxQuad+2)%4], diagQuadrants[maxQuad]] #Opposite direction to make bigger
+            elif self.squareColors[0] == "b1":
+                self.moveDirection = ["NW", avgColor, xMove, yMove]
+
+            elif self.squareColors[0] == "w2":
+                self.moveDirection = ["SW", avgColor, xMove, yMove]
                 
+            elif self.squareColors[0] == "b2":
+                self.moveDirection = ["NW", avgColor, xMove, yMove]
+                
+            elif self.squareColors[1] == "w1":
+                self.moveDirection = ["NW", avgColor, xMove, yMove]
+                
+            elif self.squareColors[1] == "b1":
+                self.moveDirection = ["NE", avgColor, xMove, yMove]
 
-            elif self.diagColors[maxQuad].c == 0 or self.diagColors[maxQuad].c == 2: #White
-                self.moveDirection = [dirNames[maxQuad], diagQuadrants[maxQuad]] #Same direction to make smaller
+            elif self.squareColors[1] == "w2":
+                self.moveDirection = ["SE", avgColor, xMove, yMove]
+                
+            elif self.squareColors[1] == "b2":
+                self.moveDirection = ["NE", avgColor, xMove, yMove]                
+            
                  
 
 

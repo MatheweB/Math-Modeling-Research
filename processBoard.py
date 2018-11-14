@@ -44,7 +44,8 @@ class Process:
                 grid.squares[y][x].setNeighborsList()
                 grid.squares[y][x].setAvgDarkestC()
                 grid.squares[y][x].setDiags()
+                grid.squares[y][x].setColors()
                 grid.squares[y][x].setDirection()
                 grid.squares[y][x].setNewVertexPos()
-                grid.squares[y][x].setColors()
+                
                 
