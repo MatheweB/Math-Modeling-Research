@@ -3,8 +3,8 @@ import draw
 import processBoard as boardProcessor
 import processImg as imgProcessor
 
-photoName = ("mona")
-tileSize =  5
+photoName = ("kai")
+tileSize =  6
 setShapes = True
 setShapeColors = False
 setLines = False #Color
@@ -13,11 +13,11 @@ setDots = False
 setDotColors = False
 
 fancyColor = False
-greyShades = 14
+greyShades = 16
 diagRestrict = False
 
 thresholding = False
-threshNum = 0
+threshNum = 1
 
 
 lineWidth = (tileSize/8)
